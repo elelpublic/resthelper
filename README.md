@@ -31,8 +31,8 @@ code and not make it visible to the outside.
 
 These projects use resthelper:
 
-https://github.com/elelpublic/infomarket
-https://github.com/elelpublic/flyer
+  * https://github.com/elelpublic/infomarket
+  * https://github.com/elelpublic/flyer
 
 
 
