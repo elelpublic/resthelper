@@ -68,9 +68,9 @@ public class AppProperties {
 
   private Properties getProperties() throws IOException {
     if( properties == null ) {
+      properties = new Properties();
       if( file.exists() && file.isFile() ) {
         Reader filereader = new FileReader( file );
-        properties = new Properties();
         properties.load( filereader );
         filereader.close();
       }
