@@ -78,12 +78,13 @@ public class AppProperties {
 
   private Properties getProperties() throws IOException {
     if( properties == null ) {
-      properties = new Properties();
+      Properties loading = new Properties();
       if( file.exists() && file.isFile() ) {
         Reader filereader = new FileReader( file );
-        properties.load( filereader );
+        loading.load( filereader );
         filereader.close();
       }
+      properties = loading;
     }
     return properties;
   }
