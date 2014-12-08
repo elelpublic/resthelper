@@ -7,6 +7,7 @@ import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.net.UrlEscapers;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
@@ -246,7 +247,9 @@ public class ConfigServlet extends HttpServlet {
   public void init( ServletConfig config ) throws ServletException {
     
     applicationId = config.getInitParameter( "applicationId" );
-    appProperties = new AppProperties( applicationId );
+    
+    File baseDir = BaseDir.getBaseDir( config.getInitParameter( "configBaseDir" ) );
+    appProperties = new AppProperties( baseDir, applicationId );
 
   }
 

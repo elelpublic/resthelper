@@ -5,6 +5,7 @@ package com.infodesire.resthelper;
 
 import com.google.common.base.Strings;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -56,7 +57,8 @@ public class ApplicationKeyFilter implements Filter {
   public void init( FilterConfig config ) throws ServletException {
     
     String applicationId = config.getInitParameter( "applicationId" );
-    appProperties = new AppProperties( applicationId );
+    File baseDir = BaseDir.getBaseDir( config.getInitParameter( "configBaseDir" ) );
+    appProperties = new AppProperties( baseDir, applicationId );
 
     Properties properties = new Properties();
     properties.put( "log4j.logger.org.apache", "WARN" );

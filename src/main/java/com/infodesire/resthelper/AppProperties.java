@@ -27,13 +27,13 @@ public class AppProperties {
   /**
    * Create instance
    * 
+   * @param baseDir Directory which contains a subdirectory for each application
    * @param applicationId Application id with which it identifies at the server
    * 
    */
-  public AppProperties( String applicationId ) {
+  public AppProperties( File baseDir, String applicationId ) {
     this.applicationId = applicationId;
-    file = new File( new File( System.getProperty( "user.home", "." ) ), "."
-      + applicationId.toLowerCase() + "/app.properties" );
+    file = new File( baseDir, applicationId.toLowerCase() + "/app.properties" );
   }
 
 

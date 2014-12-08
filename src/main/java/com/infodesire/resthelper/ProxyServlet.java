@@ -5,6 +5,7 @@ package com.infodesire.resthelper;
 
 import com.infodesire.bsmcommons.Strings;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.security.cert.CertificateException;
@@ -16,6 +17,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
 import org.apache.http.client.HttpClient;
@@ -117,9 +119,11 @@ public class ProxyServlet extends org.mitre.dsmiley.httpproxy.ProxyServlet {
   
   protected void initTarget() throws ServletException {
     
-    String applicationId = getServletConfig()
-      .getInitParameter( "applicationId" );
-    AppProperties appProperties = new AppProperties( applicationId );
+    ServletConfig config = getServletConfig();
+    
+    String applicationId = config.getInitParameter( "applicationId" );
+    File baseDir = BaseDir.getBaseDir( config.getInitParameter( "configBaseDir" ) );
+    AppProperties appProperties = new AppProperties( baseDir, applicationId );
 
     try {
       targetUri = appProperties.getRestURL();
@@ -137,7 +141,7 @@ public class ProxyServlet extends org.mitre.dsmiley.httpproxy.ProxyServlet {
       targetUri = Strings.beforeLast( targetUri, "/" );
     }
 
-    //    targetUri = getServletConfig().getInitParameter(P_TARGET_URI);
+    //    targetUri = config.getInitParameter(P_TARGET_URI);
     //test it's valid
     try {
       targetUriObj = new URI( targetUri );
