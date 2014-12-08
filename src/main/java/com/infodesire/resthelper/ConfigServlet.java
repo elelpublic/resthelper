@@ -35,15 +35,18 @@ public class ConfigServlet extends HttpServlet {
   
   // TODO: this might into the web.xml or setup code
   class Config {
-    static final String title = "Flyer Configuration";
+    static final String title = "Configuration";
     static final String installKeyTitle = "Install a new Application Key";
     static final String installKeyText = "Copy the application key you obtained from the REST server into this field and confirm.";
-    static final String reloadKeyStoreTitle = "Reload key store";
-    static final String reloadKeyStoreText = "To reload the stored key from filesystem, press the button.";
+    static final String reloadStorage = "Reload storage";
+    static final String reloadStorageText = "To reload the stored configuration from filesystem, press the button.";
   }
 
 
-  private AppProperties appProperties; 
+  private AppProperties appProperties;
+
+
+  private String applicationId; 
   
   
   protected void doPost( HttpServletRequest request,
@@ -56,13 +59,23 @@ public class ConfigServlet extends HttpServlet {
     String cmd = request.getParameter( "cmd" );
     if( cmd != null ) {
       if( cmd.equals( "install" ) ) {
-        String key = request.getParameter("applicationKey" );
+        String key = request.getParameter( "applicationKey" );
         if( !Strings.isNullOrEmpty( key ) ) {
           appProperties.setApplicationKey( key );
           flashMessage = "Key was stored and will be used from now on.";
         }
         else {
           flashMessage = "Empty key not allowed.";
+        }
+      }
+      else if( cmd.equals( "save" ) ) {
+        String restUrl = request.getParameter( "restUrl" );
+        if( !Strings.isNullOrEmpty( restUrl ) ) {
+          appProperties.setRestURL( restUrl );
+          flashMessage = "The new URL was stored.";
+        }
+        else {
+          flashMessage = "Empty url not allowed.";
         }
       }
       else if( cmd.equals( "reload" ) ) {
@@ -76,8 +89,13 @@ public class ConfigServlet extends HttpServlet {
       debug( request, response );
     }
     else {
-      response.sendRedirect( request.getRequestURI() + "?flash="
-        + UrlEscapers.urlFormParameterEscaper().escape( flashMessage ) );
+      if( flashMessage != null ) {
+        response.sendRedirect( request.getRequestURI() + "?flash="
+          + UrlEscapers.urlFormParameterEscaper().escape( flashMessage ) );
+      }
+      else {
+        response.sendRedirect( request.getRequestURI() );
+      }
     }
     
   }
@@ -121,12 +139,32 @@ public class ConfigServlet extends HttpServlet {
       }
       
       writer.println( "<h1>" + Config.title + "</h1>" );
+      writer.println( "<table>" );
       
+      writer.println( "<form action=\"#\" method=\"POST\">" );
+      writer.println( "<table>" );
+      writer.println( "<tr>" );
+      writer.println( "<td><b>Application id</b></td>" );
+      writer.println( "<td>" + applicationId + "</td>" );
+      writer.println( "</tr><tr>" );
+      writer.println( "<td><b>REST server URL</b></td>" );
+      String restUrl = appProperties.getRestURL();
+      writer
+        .println( "<td><input type=\"text\" name=\"restUrl\" cols=\"200\" value=\""
+          + ( restUrl == null ? "" : restUrl ) + "\"></input></td>" );
+      writer.println( "</tr><tr>" );
+      writer.println( "<input type=\"hidden\" name=\"cmd\" value=\"save\"></input>" );
+      writer.println( "<td><input type=\"submit\" value=\"Save\"></input></td>" );
+      writer.println( "</tr>" );
+      writer.println( "</table>" );
+      writer.println( "</form>" );
+      
+      writer.println( "<hr>" );
       writer.println( "<h2>" + Config.installKeyTitle + "</h2>" );
       writer.println( "<div>" + Config.installKeyText + "</div>" );
 
       writer.println( "<br>" );
-      writer.println( "<div>Application Key:" );
+      writer.println( "<div><b>Application Key:</b>" );
       writer.println( "<br>" );
       writer.println( "<form action=\"#\" method=\"POST\">" );
       writer.println( "<input type=\"hidden\" name=\"cmd\" value=\"install\"></input>" );
@@ -134,11 +172,10 @@ public class ConfigServlet extends HttpServlet {
       writer.println( "<br>" );
       writer.println( "<input type=\"submit\" value=\"Install\"></input>" );
       writer.println( "</form>" );
-      writer.println( "</hr>" );
       
       writer.println( "<hr>" );
       
-      writer.println( "<h2>" + Config.reloadKeyStoreTitle + "</h2>" );
+      writer.println( "<h2>" + Config.reloadStorage + "</h2>" );
       
       writer.println( "<div>" );
       writer.println( "<form action=\"#\" method=\"POST\">" );
@@ -208,7 +245,7 @@ public class ConfigServlet extends HttpServlet {
   @Override
   public void init( ServletConfig config ) throws ServletException {
     
-    String applicationId = config.getInitParameter( "applicationId" );
+    applicationId = config.getInitParameter( "applicationId" );
     appProperties = new AppProperties( applicationId );
 
   }

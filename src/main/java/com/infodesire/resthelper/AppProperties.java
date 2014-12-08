@@ -9,7 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.Date;
 import java.util.Properties;
 
 
@@ -52,10 +51,21 @@ public class AppProperties {
   }
   
   
+  public String getRestURL() throws IOException {
+    return getString( "restURL" );
+  }
+  
+  
+  public void setRestURL( String key ) throws IOException {
+    getProperties().setProperty( "restURL", key );
+    store();
+  }
+  
+  
   private void store() throws IOException {
+    file.getParentFile().mkdirs();
     Writer writer = new FileWriter( file );
-    getProperties().store( writer,
-      "Properties for app: " + applicationId + ", Last updated: " + new Date() );
+    getProperties().store( writer, "Properties for app: " + applicationId );
     writer.close();
   }
 

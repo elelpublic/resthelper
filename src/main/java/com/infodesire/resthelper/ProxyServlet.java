@@ -4,6 +4,7 @@
 package com.infodesire.resthelper;
 
 import java.io.IOException;
+import java.net.URI;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
@@ -13,8 +14,10 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import javax.servlet.ServletException;
 
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.utils.URIUtils;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
@@ -108,5 +111,33 @@ public class ProxyServlet extends org.mitre.dsmiley.httpproxy.ProxyServlet {
       return super.createHttpClient( hcParams );
     }
   }
+  
+  
+  protected void initTarget() throws ServletException {
+    
+    String applicationId = getServletConfig().getInitParameter( "applicationId" );
+    AppProperties appProperties = new AppProperties( applicationId );
+    
+    try {
+      targetUri = appProperties.getRestURL();
+    }
+    catch( IOException ex ) {
+      throw new ServletException( ex );
+    }
+    
+//    targetUri = getServletConfig().getInitParameter(P_TARGET_URI);
+    if (targetUri == null)
+      throw new ServletException(P_TARGET_URI+" is required.");
+    //test it's valid
+    try {
+      targetUriObj = new URI(targetUri);
+    } catch (Exception e) {
+      throw new ServletException("Trying to process targetUri init parameter: "+e,e);
+    }
+    
+    targetHost = URIUtils.extractHost(targetUriObj);
+    
+  }
+
 
 }
