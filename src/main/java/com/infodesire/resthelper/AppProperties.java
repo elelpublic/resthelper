@@ -94,4 +94,9 @@ public class AppProperties {
   }
 
 
+  public String describeFile() {
+    return file.getAbsolutePath();
+  }
+
+
 }

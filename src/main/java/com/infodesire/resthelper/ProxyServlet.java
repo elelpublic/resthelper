@@ -3,6 +3,8 @@
 
 package com.infodesire.resthelper;
 
+import com.infodesire.bsmcommons.Strings;
+
 import java.io.IOException;
 import java.net.URI;
 import java.security.cert.CertificateException;
@@ -115,27 +117,38 @@ public class ProxyServlet extends org.mitre.dsmiley.httpproxy.ProxyServlet {
   
   protected void initTarget() throws ServletException {
     
-    String applicationId = getServletConfig().getInitParameter( "applicationId" );
+    String applicationId = getServletConfig()
+      .getInitParameter( "applicationId" );
     AppProperties appProperties = new AppProperties( applicationId );
-    
+
     try {
       targetUri = appProperties.getRestURL();
+      if( Strings.isEmpty( targetUri ) ) {
+        throw new ServletException( "The restURL property in file "
+          + appProperties.describeFile() + " is empty or undefined." );
+      }
     }
     catch( IOException ex ) {
-      throw new ServletException( ex );
+      throw new ServletException( "Problem reading restURL property from file "
+        + appProperties.describeFile(), ex );
     }
     
-//    targetUri = getServletConfig().getInitParameter(P_TARGET_URI);
-    if (targetUri == null)
-      throw new ServletException(P_TARGET_URI+" is required.");
+    if( targetUri.endsWith( "/" ) ) {
+      targetUri = Strings.beforeLast( targetUri, "/" );
+    }
+
+    //    targetUri = getServletConfig().getInitParameter(P_TARGET_URI);
     //test it's valid
     try {
-      targetUriObj = new URI(targetUri);
-    } catch (Exception e) {
-      throw new ServletException("Trying to process targetUri init parameter: "+e,e);
+      targetUriObj = new URI( targetUri );
     }
-    
-    targetHost = URIUtils.extractHost(targetUriObj);
+    catch( Exception ex ) {
+      throw new ServletException( "The restURL property in file "
+        + appProperties.describeFile() + " is not valid: '" + targetUri + "'",
+        ex );
+    }
+
+    targetHost = URIUtils.extractHost( targetUriObj );
     
   }
 
