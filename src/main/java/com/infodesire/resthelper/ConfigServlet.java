@@ -47,7 +47,10 @@ public class ConfigServlet extends HttpServlet {
   private AppProperties appProperties;
 
 
-  private String applicationId; 
+  private String applicationId;
+
+
+  private String configBaseDir; 
   
   
   protected void doPost( HttpServletRequest request,
@@ -62,7 +65,7 @@ public class ConfigServlet extends HttpServlet {
       if( cmd.equals( "install" ) ) {
         String key = request.getParameter( "applicationKey" );
         if( !Strings.isNullOrEmpty( key ) ) {
-          appProperties.setApplicationKey( key );
+          getAppProperties().setApplicationKey( key );
           flashMessage = "Key was stored and will be used from now on.";
         }
         else {
@@ -72,7 +75,7 @@ public class ConfigServlet extends HttpServlet {
       else if( cmd.equals( "save" ) ) {
         String restUrl = request.getParameter( "restUrl" );
         if( !Strings.isNullOrEmpty( restUrl ) ) {
-          appProperties.setRestURL( restUrl );
+          getAppProperties().setRestURL( restUrl );
           flashMessage = "The new URL was stored.";
         }
         else {
@@ -80,7 +83,7 @@ public class ConfigServlet extends HttpServlet {
         }
       }
       else if( cmd.equals( "reload" ) ) {
-        appProperties.reload();
+        getAppProperties().reload();
         flashMessage = "Key was reloaded.";
       }
     }
@@ -149,7 +152,7 @@ public class ConfigServlet extends HttpServlet {
       writer.println( "<td>" + applicationId + "</td>" );
       writer.println( "</tr><tr>" );
       writer.println( "<td><b>REST server URL</b></td>" );
-      String restUrl = appProperties.getRestURL();
+      String restUrl = getAppProperties().getRestURL();
       writer
         .println( "<td><input type=\"text\" name=\"restUrl\" cols=\"200\" value=\""
           + ( restUrl == null ? "" : restUrl ) + "\"></input></td>" );
@@ -247,11 +250,22 @@ public class ConfigServlet extends HttpServlet {
   public void init( ServletConfig config ) throws ServletException {
     
     applicationId = config.getInitParameter( "applicationId" );
-    
-    File baseDir = BaseDir.getBaseDir( config.getInitParameter( "configBaseDir" ) );
-    appProperties = new AppProperties( baseDir, applicationId );
+    configBaseDir = config.getInitParameter( "configBaseDir" );
 
   }
+  
+  
+  /**
+   * Lazy evaluation is important, because some apps might want to set a system property
+   */
+  private AppProperties getAppProperties() {
+    if( appProperties == null ) {
+      File baseDir = BaseDir.getBaseDir( configBaseDir );
+      appProperties = new AppProperties( baseDir, applicationId );
+    }
+    return appProperties;
+  }
+
 
 }
 

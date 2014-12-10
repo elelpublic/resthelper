@@ -27,6 +27,8 @@ import org.apache.log4j.PropertyConfigurator;
 public class ApplicationKeyFilter implements Filter {
 
   private AppProperties appProperties;
+  private String applicationId;
+  private String configBaseDir;
 
   @Override
   public void destroy() {
@@ -36,7 +38,7 @@ public class ApplicationKeyFilter implements Filter {
   public void doFilter( ServletRequest request, ServletResponse response,
     FilterChain chain ) throws IOException, ServletException {
     
-    String applicationKey = appProperties.getApplicationKey();
+    String applicationKey = getAppProperties().getApplicationKey();
 
     if( !Strings.isNullOrEmpty( applicationKey ) ) {
       if( request instanceof HttpServletRequest ) {
@@ -53,13 +55,25 @@ public class ApplicationKeyFilter implements Filter {
     
   }
 
+  
+  /**
+   * Lazy evaluation is important, because some apps might want to set a system property
+   */
+  private AppProperties getAppProperties() {
+    if( appProperties == null ) {
+      File baseDir = BaseDir.getBaseDir( configBaseDir );
+      appProperties = new AppProperties( baseDir, applicationId );
+    }
+    return appProperties;
+  }
+  
+
   @Override
   public void init( FilterConfig config ) throws ServletException {
     
-    String applicationId = config.getInitParameter( "applicationId" );
-    File baseDir = BaseDir.getBaseDir( config.getInitParameter( "configBaseDir" ) );
-    appProperties = new AppProperties( baseDir, applicationId );
-
+    applicationId = config.getInitParameter( "applicationId" );
+    configBaseDir = config.getInitParameter( "configBaseDir" );
+    
     Properties properties = new Properties();
     properties.put( "log4j.logger.org.apache", "WARN" );
     properties.put( "log4j.logger.org.restlet", "WARN" );

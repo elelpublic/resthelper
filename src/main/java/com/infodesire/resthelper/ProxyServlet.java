@@ -90,6 +90,9 @@ public class ProxyServlet extends org.mitre.dsmiley.httpproxy.ProxyServlet {
   };
 
 
+  private AppProperties appProperties;
+
+
   @Override
   protected HttpClient createHttpClient( HttpParams hcParams ) {
 
@@ -119,11 +122,7 @@ public class ProxyServlet extends org.mitre.dsmiley.httpproxy.ProxyServlet {
   
   protected void initTarget() throws ServletException {
     
-    ServletConfig config = getServletConfig();
-    
-    String applicationId = config.getInitParameter( "applicationId" );
-    File baseDir = BaseDir.getBaseDir( config.getInitParameter( "configBaseDir" ) );
-    AppProperties appProperties = new AppProperties( baseDir, applicationId );
+    AppProperties appProperties = getAppProperties();
 
     try {
       targetUri = appProperties.getRestURL();
@@ -156,5 +155,28 @@ public class ProxyServlet extends org.mitre.dsmiley.httpproxy.ProxyServlet {
     
   }
 
+
+  /**
+   * Lazy evaluation is important, because some apps might want to set a system property
+   * 
+   * @param baseDir 
+   * @param applicationId 
+   */
+  private AppProperties getAppProperties() {
+    
+    if( appProperties == null ) {
+      
+      ServletConfig config = getServletConfig();
+      
+      String applicationId = config.getInitParameter( "applicationId" );
+      String configBaseDir = config.getInitParameter( "configBaseDir" );
+
+      File baseDir = BaseDir.getBaseDir( configBaseDir );
+      appProperties = new AppProperties( baseDir, applicationId );
+    }
+    
+    return appProperties;
+    
+  }
 
 }

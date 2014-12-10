@@ -22,6 +22,9 @@ import java.io.File;
 public class BaseDir {
 
   
+  public static final String DEFAULT_DIR_PROPERTY = "com.infodesire.resthelper.configBaseDir";
+  
+
   /**
    * @param baseDirName Name of the base dir or null for default
    * @return Directory which contains sub directories for each app
@@ -33,8 +36,8 @@ public class BaseDir {
       return new File( baseDirName );
     }
     
-    String property = System.getProperty( "com.infodesire.resthelper.configBaseDir" );
-    if( Strings.isNullOrEmpty( property ) ) {
+    String property = System.getProperty( DEFAULT_DIR_PROPERTY );
+    if( !Strings.isNullOrEmpty( property ) ) {
       return new File( property );
     }
     
