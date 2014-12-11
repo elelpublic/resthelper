@@ -13,7 +13,7 @@ How?
 ----
 
 Resthelper stores the application keys in a file in your home directory,
-usually ~/.YOURAPPNAME.
+usually ~/.bsmapps/YOURAPPNAME/app.properties.
 
 Then instead of accessing the REST server directly you send all requests
 to this servlet which will add the application keys and relay the request

@@ -13,7 +13,7 @@ import java.util.Properties;
 
 
 /**
- * Persistent storage for some properties of the application. Will use a file named ~/.APPID/app.properties where APPID is the application id as specified in the parameter applicationId of the
+ * Persistent storage for some properties of the application. Will use a file named ~/.bsmapps/APPID/app.properties where APPID is the application id as specified in the parameter applicationId of the
  * ApplicationKeyFilter in web.xml.
  *
  */
