@@ -6,8 +6,11 @@ package com.infodesire.resthelper;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterators;
+import com.infodesire.bsmcommons.io.PrintStringWriter;
+import com.infodesire.bsmcommons.io.Writers;
 
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -65,99 +68,33 @@ public class PreparedRequest {
    * 
    */
   public void toHTML( PrintWriter writer ) {
-
-    writer.println( "<table border=1>" );
-
-    line( "URL", writer );
-    line( "Method", request.getMethod(), writer );
-    line( "Scheme", uriBuilder.getScheme(), writer );
-    line( "Host", uriBuilder.getHost(), writer );
-    line( "Port", "" + uriBuilder.getPort(), writer );
-    line( "Path", uriBuilder.getPath(), writer );
-    line( "Fragment", uriBuilder.getFragment(), writer );
-    line( "UserInfo", uriBuilder.getUserInfo(), writer );
-
-    line( "Route", route, writer );
-    
-    line( "Request", writer );
-    line( "AuthType", request.getAuthType(), writer );
-    line( "CharacterEncoding", request.getCharacterEncoding(), writer );
-    line( "ContentLength", request.getContentLength(), writer );
-    line( "ContentType", request.getContentType(), writer );
-    line( "ContextPath", request.getContextPath(), writer );
-    line( "LocalAddr", request.getLocalAddr(), writer );
-    line( "Locale", request.getLocale(), writer );
-    line( "LocaleName", request.getLocalName(), writer );
-    line( "LocalPort", request.getLocalPort(), writer );
-    line( "PathInfo", request.getPathInfo(), writer );
-    line( "PathTranslated", request.getPathTranslated(), writer );
-    line( "Protocol", request.getProtocol(), writer );
-    line( "RemoteAddr", request.getRemoteAddr(), writer );
-    line( "RemoteHost", request.getRemoteHost(), writer );
-    line( "RemotePort", request.getRemotePort(), writer );
-    line( "RemoteUser", request.getRemoteUser(), writer );
-    line( "RequestedSessionId", request.getRequestedSessionId(), writer );
-    line( "RequestURI", request.getRequestURI(), writer );
-    line( "RequestURL", request.getRequestURL(), writer );
-    line( "Scheme", request.getScheme(), writer );
-    line( "ServerName", request.getServerName(), writer );
-    line( "ServerPort", request.getServerPort(), writer );
-    line( "ServletPath", request.getServletPath(), writer );
-    line( "UserPrincipal", request.getUserPrincipal(), writer );
-    
-    line( "QueryParameters", writer );
-    for( NameValuePair param : uriBuilder.getQueryParams() ) {
-      line( param.getName(), param.getValue(), writer );
-    }
-
-    line( "Parameters", writer );
-    for( Object object : request.getParameterMap().entrySet() ) {
-      @SuppressWarnings("rawtypes")
-      Map.Entry entry = (Map.Entry) object;
-      line( "" + entry.getKey(), entry.getValue(), writer );
-    }
-    
-    line( "Headers", writer );
-    for( @SuppressWarnings("rawtypes")
-    Enumeration e = request.getHeaderNames(); e.hasMoreElements(); ) {
-      
-      String name = (String) e.nextElement();
-      @SuppressWarnings("unchecked")
-      String value = Joiner.on( " " ).join(
-        Iterators.forEnumeration( (Enumeration<String>) request
-          .getHeaders( name ) ) );
-      line( name, value, writer );
-      
-    }
-
-    line( "Cookies", writer );
-    for( Cookie cookie : request.getCookies() ) {
-      line( cookie.getName(), cookie.getValue(), writer );
-    }
-    
-//    line( "Attributes", writer );
-//    for( @SuppressWarnings("rawtypes")
-//    Enumeration e = request.getAttributeNames(); e.hasMoreElements(); ) {
-//      
-//      String name = (String) e.nextElement();
-//      line( name, request.getAttribute( name ), writer );
-//      
-//    }
-    
-    writer.println( "</table>" );
-
+    dump( writer, true );
   }
 
 
-  private static void line( String name, Object value, PrintWriter writer ) {
+  private static void line( String name, Object value, PrintWriter writer,
+    boolean html ) {
     if( value != null && value.getClass().isArray() ) {
       value = Arrays.asList( (Object[]) value );
     }
-    writer.println( "<tr><td><i>" + name + "</i></td><td>" + ( value == null ? "" : value ) + "</td></tr>" );
+    if( html ) {
+      writer.println( "<tr><td><i>" + name + "</i></td><td>"
+        + ( value == null ? "" : value ) + "</td></tr>" );
+    }
+    else {
+      writer.println( name + ": " + ( value == null ? "" : value ) );
+    }
   }
 
-  private static void line( String title, PrintWriter writer ) {
-    writer.println( "<tr><td colspan=2><b>" + ( title == null ? "" : title ) + "</b></td></tr>" );
+
+  private static void line( String title, PrintWriter writer, boolean html ) {
+    if( html ) {
+      writer.println( "<tr><td colspan=2><b>" + ( title == null ? "" : title )
+        + "</b></td></tr>" );
+    }
+    else {
+      writer.println( title == null ? "" : title );
+    }
   }
 
 
@@ -192,8 +129,111 @@ public class PreparedRequest {
     }
     return null;
   }
+  
+  
+  public void dump( Writer writer, boolean html ) {
+    
+    PrintWriter print = Writers.printWriter( writer );
+
+    if( html ) {
+      print.println( "<table border=1>" );
+    }
+
+    line( "URL", print, html );
+    line( "Method", request.getMethod(), print, html );
+    line( "Scheme", uriBuilder.getScheme(), print, html );
+    line( "Host", uriBuilder.getHost(), print, html );
+    line( "Port", "" + uriBuilder.getPort(), print, html );
+    line( "Path", uriBuilder.getPath(), print, html );
+    line( "Fragment", uriBuilder.getFragment(), print, html );
+    line( "UserInfo", uriBuilder.getUserInfo(), print, html );
+
+    line( "Route", route, print, html );
+    
+    line( "Request", print, html );
+    line( "AuthType", request.getAuthType(), print, html );
+    line( "CharacterEncoding", request.getCharacterEncoding(), print, html );
+    line( "ContentLength", request.getContentLength(), print, html );
+    line( "ContentType", request.getContentType(), print, html );
+    line( "ContextPath", request.getContextPath(), print, html );
+    line( "LocalAddr", request.getLocalAddr(), print, html );
+    line( "Locale", request.getLocale(), print, html );
+    line( "LocaleName", request.getLocalName(), print, html );
+    line( "LocalPort", request.getLocalPort(), print, html );
+    line( "PathInfo", request.getPathInfo(), print, html );
+    line( "PathTranslated", request.getPathTranslated(), print, html );
+    line( "Protocol", request.getProtocol(), print, html );
+    line( "RemoteAddr", request.getRemoteAddr(), print, html );
+    line( "RemoteHost", request.getRemoteHost(), print, html );
+    line( "RemotePort", request.getRemotePort(), print, html );
+    line( "RemoteUser", request.getRemoteUser(), print, html );
+    line( "RequestedSessionId", request.getRequestedSessionId(), print, html );
+    line( "RequestURI", request.getRequestURI(), print, html );
+    line( "RequestURL", request.getRequestURL(), print, html );
+    line( "Scheme", request.getScheme(), print, html );
+    line( "ServerName", request.getServerName(), print, html );
+    line( "ServerPort", request.getServerPort(), print, html );
+    line( "ServletPath", request.getServletPath(), print, html );
+    line( "UserPrincipal", request.getUserPrincipal(), print, html );
+    
+    line( "QueryParameters", print, html );
+    for( NameValuePair param : uriBuilder.getQueryParams() ) {
+      line( param.getName(), param.getValue(), print, html );
+    }
+
+    line( "Parameters", print, html );
+    for( Object object : request.getParameterMap().entrySet() ) {
+      @SuppressWarnings("rawtypes")
+      Map.Entry entry = (Map.Entry) object;
+      line( "" + entry.getKey(), entry.getValue(), print, html );
+    }
+    
+    line( "Headers", print, html );
+    for( @SuppressWarnings("rawtypes")
+    Enumeration e = request.getHeaderNames(); e.hasMoreElements(); ) {
+      
+      String name = (String) e.nextElement();
+      @SuppressWarnings("unchecked")
+      String value = Joiner.on( " " ).join(
+        Iterators.forEnumeration( (Enumeration<String>) request
+          .getHeaders( name ) ) );
+      line( name, value, print, html );
+      
+    }
+
+    line( "Cookies", print, html );
+    for( Cookie cookie : request.getCookies() ) {
+      line( cookie.getName(), cookie.getValue(), print, html );
+    }
+    
+//    line( "Attributes", print );
+//    for( @SuppressWarnings("rawtypes")
+//    Enumeration e = request.getAttributeNames(); e.hasMoreElements(); ) {
+//      
+//      String name = (String) e.nextElement();
+//      line( name, request.getAttribute( name ), print );
+//      
+//    }
+    
+    if( html ) {
+      print.println( "</table>" );
+    }
+
+  }
 
 
+  public String dump( boolean html ) {
+    PrintStringWriter print = new PrintStringWriter();
+    dump( print, false );
+    return print.toString();
+  }
+  
+  
+  public String dump() {
+    return dump( false );
+  }
+  
+  
 }
 
 

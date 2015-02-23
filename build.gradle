@@ -16,7 +16,7 @@ apply plugin: 'jetty'
 
 
 group = 'com.infodesire'
-version = '0.1.2'
+version = '0.1.3'
 
 httpPort = 8081
 
@@ -42,7 +42,7 @@ dependencies {
     compile(
     
     	'com.google.guava:guava:18.0',
-    	'com.infodesire:bsmcommons:0.4.5',
+    	'com.infodesire:bsmcommons:0.4.7',
     	'commons-collections:commons-collections:3.2.1',
     	'log4j:log4j:1.2.17',
     	'org.apache.httpcomponents:httpclient:4.3.5',
@@ -68,7 +68,7 @@ compileJava {
 }
 
 
-def warArchiveName = 'infomarket.war'
+def warArchiveName = 'resthelper.war'
 
 war {
 	archiveName = warArchiveName
