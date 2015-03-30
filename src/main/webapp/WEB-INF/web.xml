@@ -10,46 +10,12 @@
         Proxy calls from javascript to REST server. Add application keys.
     </description>
     
-    <servlet>
-        
-        <servlet-name>ConfigServlet</servlet-name>
-        <servlet-class>com.infodesire.resthelper.ConfigServlet</servlet-class>
-        
-				<init-param>
-					<param-name>applicationId</param-name>
-					<param-value>SAMPLE_APP</param-value>
-				</init-param>
-				
-				<!--
-		    
-		    The configBaseDir parameter defines the location of the configuration
-		    directory for resthelper. 
-
-				The directory will be determined by follwing these steps:		    
-		    
-		    1) if a servlet init-param named "configBaseDir" is defined, it will be used
-		    2) if a System-property com.infodesire.resthelper.configBaseDir is defined, it will be used
-		    3) the default "${user.home}/.bsmapps will be used
-		    
-		    In each step, system propertys can be used, using the ${propertyname} syntax.
-		    
-		    -->
-		   <!-- 
-		   <init-param>
-					<param-name>configBaseDir</param-name>
-					<param-value>${user.home}/.myapp/resthelper</param-value>
-		   </init-param>
-		    -->
-				
-        
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>ConfigServlet</servlet-name>
-        <url-pattern>/config</url-pattern>
-    </servlet-mapping>
-
+    
+    <!-- ApplicationKeyFilter filters all requests and adds application key to headers -->
+    
+		
 		<filter>
+		
 		   <filter-name>ApplicationKeyFilter</filter-name>
 		   <filter-class>com.infodesire.resthelper.ApplicationKeyFilter</filter-class>
 		   <init-param>
@@ -57,20 +23,10 @@
 					<param-value>SAMPLE_APP</param-value>
 		   </init-param>
 		   
-		   <!--
+		   <!--  
+		   PLEASE READ AT THE BOTTOM OF THIS FILE ON HOW TO CONFIGURE "configBaseDir"
+		   -->
 		    
-		    The configBaseDir parameter defines the location of the configuration
-		    directory for resthelper. 
-
-				The directory will be determined by follwing these steps:		    
-		    
-		    1) if a servlet init-param named "configBaseDir" is defined, it will be used
-		    2) if a System-property com.infodesire.resthelper.configBaseDir is defined, it will be used
-		    3) the default "${user.home}/.bsmapps will be used
-		    
-		    In each step, system propertys can be used, using the ${propertyname} syntax.
-		    
-		    -->
 		   <!-- 
 		   <init-param>
 					<param-name>configBaseDir</param-name>
@@ -84,26 +40,21 @@
 		   <filter-name>ApplicationKeyFilter</filter-name>
 		   <url-pattern>/rest/*</url-pattern>
 		</filter-mapping>
+		
+		
+		
+		<!-- the proxy servlet forwards requests to the REST server -->
+		
 
 		<servlet>
 		
 		    <servlet-name>proxy</servlet-name>
 		    <servlet-class>com.infodesire.resthelper.ProxyServlet</servlet-class>
 		    
-		   <!--
-		   
-		    The configBaseDir parameter defines the location of the configuration
-		    directory for resthelper. 
+		   <!--  
+		   PLEASE READ AT THE BOTTOM OF THIS FILE ON HOW TO CONFIGURE "configBaseDir"
+		   -->
 
-				The directory will be determined by follwing these steps:		    
-		    
-		    1) if a servlet init-param named "configBaseDir" is defined, it will be used
-		    2) if a System-property com.infodesire.resthelper.configBaseDir is defined, it will be used
-		    3) the default "${user.home}/.bsmapps will be used
-		    
-		    In each step, system propertys can be used, using the ${propertyname} syntax.
-		    
-		    -->
 		   <!-- 
 		   <init-param>
 					<param-name>configBaseDir</param-name>
@@ -127,5 +78,56 @@
 		  <url-pattern>/rest/*</url-pattern>
 		</servlet-mapping>
 		
+		
+		
+<!-- 
+
+		The optional ConfigServlet can be used to configure the REST URL 
+		and applicationKey via browser.
+		
+		It is disabled by default.
+      
+    <servlet>
+
+        <servlet-name>ConfigServlet</servlet-name>
+        <servlet-class>com.infodesire.resthelper.ConfigServlet</servlet-class>
+        
+				<init-param>
+					<param-name>applicationId</param-name>
+					<param-value>SAMPLE_APP</param-value>
+				</init-param>
+ 		   <init-param>
+					<param-name>configBaseDir</param-name>
+					<param-value>${user.home}/.myapp/resthelper</param-value>
+		   </init-param>
+				
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>ConfigServlet</servlet-name>
+        <url-pattern>/config</url-pattern>
+    </servlet-mapping>
+    
+-->
+		
+
+
+<!--
+
+HOW TO CONFIGURE "configBaseDir"
+================================
+ 
+The configBaseDir parameter defines the location of the configuration
+directory for resthelper. 
+
+The directory will be determined by follwing these steps:		    
+  
+1) if a servlet init-param named "configBaseDir" is defined, it will be used
+2) if a System-property com.infodesire.resthelper.configBaseDir is defined, it will be used
+3) the default "${user.home}/.bsmapps will be used
+
+In each step, system properties can be used, using the ${propertyname} syntax.
+
+ -->		
 
 </web-app> 

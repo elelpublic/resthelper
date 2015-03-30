@@ -12,8 +12,14 @@ keys to your rest requests without exposing them in the javascript code.
 How?
 ----
 
-Resthelper stores the application keys in a file in your home directory,
-usually CONFIG-BASE-DIR/YOUR-APP-ID/app.properties.
+Resthelper needs these configuration information:
+
+  * the URL of the REST server
+  * the applicationKey of the application using the REST service
+
+Resthelper stores these information in the file:
+
+	CONFIG-BASE-DIR/YOUR-APP-ID/app.properties
 
 (see below on how to configure CONFIG-BASE-DIR and YOUR-APP-ID)
 
@@ -42,6 +48,12 @@ How to use and configure it?
 Create a webapp and adapt the servlets and filters from web.xml of resthelper.
 Read the comments in the web.xml on how to configure resthelper, 
 then change the init-params to your needs.
+
+To configure the production instance of your application, change the
+URL and application key in the file:
+
+	CONFIG-BASE-DIR/YOUR-APP-ID/app.properties
+
 
 
 

@@ -3,10 +3,15 @@
 
 package com.infodesire.resthelper;
 
+import com.google.common.io.ByteStreams;
+
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Properties;
@@ -20,6 +25,8 @@ import java.util.Properties;
 public class AppProperties {
 
 
+  public static final String SAMPLE_APPLICATION_KEY = "MY-APPLICATION-KEY";
+  public static final String SAMPLE_REST_URL = "http://RESTSERVER/REST-URI";
   private File file;
   private String applicationId;
 
@@ -79,6 +86,13 @@ public class AppProperties {
   private Properties getProperties() throws IOException {
     if( properties == null ) {
       Properties loading = new Properties();
+      if( !file.exists() ) {
+        installSampleConfig();
+        new IOException(
+          "Config file not found. An example file was created at "
+            + file.getAbsolutePath()
+            + ". Please edit it to fit your installation." ).printStackTrace();
+      }
       if( file.exists() && file.isFile() ) {
         Reader filereader = new FileReader( file );
         loading.load( filereader );
@@ -87,6 +101,16 @@ public class AppProperties {
       properties = loading;
     }
     return properties;
+  }
+
+
+  private void installSampleConfig() throws IOException {
+    InputStream from = AppProperties.class.getResourceAsStream( "/app.sample.properties" );
+    file.getParentFile().mkdirs();
+    OutputStream to = new FileOutputStream( file );
+    ByteStreams.copy( from, to );
+    from.close();
+    to.close();
   }
 
 

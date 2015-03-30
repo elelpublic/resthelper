@@ -18,7 +18,7 @@ apply plugin: 'jetty'
 // PROJECT ---------------------------------------------------------------------
 
 group = 'com.infodesire'
-version = '0.1.4'
+version = '0.1.5'
 httpPort = 8081
 
 // BUILD & DEPENDENCIES ---------------------------------------------------------------------
@@ -65,7 +65,10 @@ dependencies {
     // TestNG is also supported by the Gradle Test task. Just change the
     // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
     // 'test.useTestNG()' to your build script.
-    testCompile 'junit:junit:4.11'
+    testCompile ( 
+      'junit:junit:4.11'
+      , 'commons-io:commons-io:2.4'
+    )
 
 }
 
