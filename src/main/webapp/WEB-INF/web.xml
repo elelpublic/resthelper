@@ -19,6 +19,28 @@
 					<param-name>applicationId</param-name>
 					<param-value>SAMPLE_APP</param-value>
 				</init-param>
+				
+				<!--
+		    
+		    The configBaseDir parameter defines the location of the configuration
+		    directory for resthelper. 
+
+				The directory will be determined by follwing these steps:		    
+		    
+		    1) if a servlet init-param named "configBaseDir" is defined, it will be used
+		    2) if a System-property com.infodesire.resthelper.configBaseDir is defined, it will be used
+		    3) the default "${user.home}/.bsmapps will be used
+		    
+		    In each step, system propertys can be used, using the ${propertyname} syntax.
+		    
+		    -->
+		   <!-- 
+		   <init-param>
+					<param-name>configBaseDir</param-name>
+					<param-value>${user.home}/.myapp/resthelper</param-value>
+		   </init-param>
+		    -->
+				
         
     </servlet>
 
