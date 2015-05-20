@@ -29,6 +29,7 @@ public class AppProperties {
   public static final String SAMPLE_REST_URL = "http://RESTSERVER/REST-URI";
   private File file;
   private String applicationId;
+  public static boolean quietMode = false;
 
 
   /**
@@ -88,10 +89,12 @@ public class AppProperties {
       Properties loading = new Properties();
       if( !file.exists() ) {
         installSampleConfig();
-        new IOException(
-          "Config file not found. An example file was created at "
-            + file.getAbsolutePath()
-            + ". Please edit it to fit your installation." ).printStackTrace();
+        if( !quietMode ) {
+          new IOException(
+            "Config file not found. An example file was created at "
+              + file.getAbsolutePath()
+              + ". Please edit it to fit your installation." ).printStackTrace();
+        }
       }
       if( file.exists() && file.isFile() ) {
         Reader filereader = new FileReader( file );
