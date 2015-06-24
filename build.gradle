@@ -52,7 +52,7 @@ dependencies {
       , 'commons-collections:commons-collections:3.2.1'
     	, 'com.google.guava:guava:18.0'
     	, 'com.infodesire:bsmcommons:0.4.7'
-    	, 'org.apache.commons:commons-lang3:3.3.2'
+    	, 'org.apache.commons:commons-lang3:3.4'
     	, 'log4j:log4j:1.2.17'
      
     )
