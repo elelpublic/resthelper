@@ -53,6 +53,15 @@ To configure the production instance of your application, change the
 URL and application key in the file:
 
 	CONFIG-BASE-DIR/YOUR-APP-ID/app.properties
+	
+How to force a reload
+---------------------
+
+Send a request through the proxy url and add the HTTP header:
+
+	x-resthelper-reload
+	
+with any value, for instance 'true'. 
 
 
 

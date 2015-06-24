@@ -3,6 +3,8 @@
 
 package com.infodesire.resthelper;
 
+import static com.infodesire.resthelper.Resthelper.*;
+
 import com.google.common.base.Strings;
 
 import java.io.File;
@@ -38,17 +40,25 @@ public class ApplicationKeyFilter implements Filter {
   public void doFilter( ServletRequest request, ServletResponse response,
     FilterChain chain ) throws IOException, ServletException {
     
-    String applicationKey = getAppProperties().getApplicationKey();
-
-    if( !Strings.isNullOrEmpty( applicationKey ) ) {
-      if( request instanceof HttpServletRequest ) {
-        
-        RequestWithAddedHeaders newRequest = new RequestWithAddedHeaders(
-          (HttpServletRequest) request );
-        newRequest.addHeader( "x-application-key", applicationKey );
-        request = newRequest;
-        
+    if( request instanceof HttpServletRequest ) {
+      
+      HttpServletRequest httpRequest = (HttpServletRequest) request;
+      
+      if( httpRequest.getHeader( HTTP_HEADER_RELOAD ) != null ) {
+        appProperties = null;
       }
+      
+      String applicationKey = getAppProperties().getApplicationKey();
+      
+      if( !Strings.isNullOrEmpty( applicationKey ) ) {
+          
+        RequestWithAddedHeaders newRequest = new RequestWithAddedHeaders(
+          httpRequest );
+        newRequest.addHeader( HTTP_HEADER_APPLICATION_KEY, applicationKey );
+        request = newRequest;
+          
+      }
+      
     }
     
     chain.doFilter( request, response );
