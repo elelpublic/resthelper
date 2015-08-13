@@ -18,7 +18,7 @@ apply plugin: 'jetty'
 // PROJECT ---------------------------------------------------------------------
 
 group = 'com.infodesire'
-version = '0.1.7'
+version = '0.1.8'
 httpPort = 8081
 
 // BUILD & DEPENDENCIES ---------------------------------------------------------------------
@@ -46,7 +46,7 @@ dependencies {
 
       // the original proxy
       'org.mitre.dsmiley.httpproxy:smiley-http-proxy-servlet:1.5'	
-      , 'org.apache.httpcomponents:httpclient:4.3.5'
+      , 'org.apache.httpcomponents:httpclient:4.4.1'
 
       // utils    
       , 'commons-collections:commons-collections:3.2.1'
